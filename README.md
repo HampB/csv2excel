@@ -10,6 +10,7 @@
 - Specify custom delimiters for CSV files
 - Infer and convert column types (string to integer or float)
 - Specify output file name or path
+- Merge multiple CSV files into a single Excel file
 
 ## Installation
 
@@ -32,6 +33,20 @@ csv2excel -i <input-file> -o <output-file> -d <delimiter> -c
 - `-i, --input`: Path to the input CSV file (required)
 - `-o, --output`: Path to the output Excel file (optional)
 - `-n, --name`: Name of the output Excel file (optional)
+- `-d, --delimiter`: Delimiter for CSV file (default is `,`)
+- `-c, --convert`: Convert column types to inferred types (optional)
+
+### Merge Command Options
+
+The `merge` command allows you to combine multiple CSV files into a single Excel file. Below are the available options:
+
+```sh
+csv2excel merge -f <file1.csv,file2.csv> -F <folder> -o <output-file> -d <delimiter> -c
+```
+
+- `-f, --files`: List of CSV files to merge (comma-separated)
+- `-F, --folder`: Path to the folder containing CSV files
+- `-o, --output`: Path to the output Excel file (required)
 - `-d, --delimiter`: Delimiter for CSV file (default is `,`)
 - `-c, --convert`: Convert column types to inferred types (optional)
 
@@ -59,6 +74,18 @@ Specify the full path for the output file:
 
 ```sh
 csv2excel -i data.csv -o /path/to/output.xlsx
+```
+
+Merge multiple CSV files into a single Excel file:
+
+```sh
+csv2excel merge -f file1.csv,file2.csv -o merged.xlsx
+```
+
+Merge all CSV files in a folder into a single Excel file:
+
+```sh
+csv2excel merge -F /path/to/csvfiles -o merged.xlsx
 ```
 
 ## License
