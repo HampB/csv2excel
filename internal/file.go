@@ -53,10 +53,22 @@ func New(filePath string, delimiter rune) *CSV {
 	}
 }
 
+func NewFromRecords(filePath string, delimiter rune, headers []Column, records [][]interface{}) *CSV {
+	return &CSV{
+		FilePath:  filePath,
+		Delimiter: delimiter,
+		Headers:   headers,
+		Records:   records,
+	}
+}
+
 // Read reads the CSV file, parses its contents, and populates the CSV struct.
 // It infers column names from the first row and stores the data in the Records field.
 // Returns an error if the file cannot be opened or read.
 func (c *CSV) Read() error {
+	if c.FilePath == "" {
+		return fmt.Errorf("file path is empty, a valid file path is required")
+	}
 	file, err := os.Open(c.FilePath)
 	if err != nil {
 		return err
@@ -177,4 +189,23 @@ func (c *CSV) GetHeaderNames() []string {
 		columnNames[i] = column.Name
 	}
 	return columnNames
+}
+
+func Merge(files ...*CSV) (*CSV, error) {
+	if len(files) == 0 {
+		return nil, fmt.Errorf("no files to merge")
+	}
+	columnCount := len(files[0].Headers)
+
+	for _, file := range files[1:] {
+		if columnCount != len(file.Headers) {
+			return nil, fmt.Errorf("inconsistent number of columns in files")
+		}
+	}
+	mergedFiles := make([][]interface{}, 0)
+	for _, file := range files {
+		mergedFiles = append(mergedFiles, file.Records...)
+	}
+	f := NewFromRecords("", files[0].Delimiter, files[0].Headers, mergedFiles)
+	return f, nil
 }
