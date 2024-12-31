@@ -199,7 +199,7 @@ func Merge(files ...*CSV) (*CSV, error) {
 
 	for _, file := range files[1:] {
 		if columnCount != len(file.Headers) {
-			return nil, fmt.Errorf("inconsistent number of columns in files")
+			return nil, fmt.Errorf("inconsistent number of columns in either %s or %s", file.FilePath, files[0].FilePath)
 		}
 	}
 	mergedFiles := make([][]interface{}, 0)
