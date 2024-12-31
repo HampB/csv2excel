@@ -73,7 +73,6 @@ func Execute() {
 
 func init() {
 
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringVarP(&inputFile, "input", "i", "", "Path to the input CSV file")
 	rootCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Path to the output Excel file")
 	rootCmd.Flags().StringVarP(&outputName, "name", "n", "", "Name of the output Excel file")
