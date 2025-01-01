@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	file "github.com/HampB/csv2excel/internal"
+	"github.com/HampB/csv2excel/internal/file"
 	"github.com/spf13/cobra"
 )
 

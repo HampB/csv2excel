@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	file "github.com/HampB/csv2excel/internal"
+	"github.com/HampB/csv2excel/internal/file"
 
 	"github.com/spf13/cobra"
 )
