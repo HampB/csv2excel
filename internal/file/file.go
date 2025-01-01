@@ -5,6 +5,7 @@ package file
 import (
 	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 
@@ -92,13 +93,11 @@ func (c *CSV) Read() error {
 	}
 	defer file.Close()
 
-	reader := csv.NewReader(file)
-	reader.Comma = c.Delimiter
-
-	records, err := reader.ReadAll()
+	records, err := readCSV(file, c.Delimiter)
 	if err != nil {
 		return err
 	}
+
 	noOfRecords := len(records)
 	if noOfRecords == 0 {
 		return fmt.Errorf("no records found in %s", c.FilePath)
@@ -123,10 +122,19 @@ func (c *CSV) Read() error {
 	return nil
 }
 
+func readCSV(reader io.Reader, delimiter rune) ([][]string, error) {
+	r := csv.NewReader(reader)
+	r.Comma = delimiter
+	records, err := r.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+	return records, nil
+}
+
 // ConvertColumnTypes attempts to convert string values in the Records to their inferred types (float or integer).
 // This function relies on the inferColumnTypes method to determine the appropriate type for each column.
 func (c *CSV) ConvertColumnTypes() {
-	c.inferColumnTypes()
 	for _, record := range c.Records {
 		for i := range c.Headers {
 			if stringValue, ok := record[i].(string); ok {
@@ -148,16 +156,16 @@ func (c *CSV) ConvertColumnTypes() {
 // inferColumnTypes analyzes a sample of rows to infer the data type of each column.
 // It checks if the values in a column can be parsed as float or integer.
 // The number of rows to inspect is determined by the defaultTypeInferanceRows constant.
-func (c *CSV) inferColumnTypes() {
+func (c *CSV) InferColumnTypes() {
 	rangeToCheck := min(defaultTypeInferanceRows, len(c.Records))
 	for i := range c.Headers {
 		floatCount, intCount := 0, 0
 		for _, record := range c.Records[:rangeToCheck] {
 			if stringValue, ok := record[i].(string); ok {
-				if _, err := strconv.ParseFloat(stringValue, 64); err == nil {
-					floatCount++
-				} else if _, err := strconv.ParseInt(stringValue, 10, 64); err == nil {
+				if _, err := strconv.ParseInt(stringValue, 10, 64); err == nil {
 					intCount++
+				} else if _, err := strconv.ParseFloat(stringValue, 64); err == nil {
+					floatCount++
 				}
 			}
 		}

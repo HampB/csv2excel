@@ -44,6 +44,7 @@ You can specify the input CSV file, output Excel file, and the delimiter used in
 				return
 			}
 			if convertTypes {
+				f.InferColumnTypes()
 				f.ConvertColumnTypes()
 			}
 			if outputFile == "" && outputName == "" {
