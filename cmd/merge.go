@@ -48,6 +48,7 @@ csv2excel merge --folder /path/to/csvfiles --output result.xlsx`,
 			}
 
 			if convertTypes {
+				f.InferColumnTypes()
 				f.ConvertColumnTypes()
 			}
 			if outputFile == "" && outputName == "" {
