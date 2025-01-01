@@ -98,7 +98,10 @@ func processFiles(filePaths []string, delimiter rune) (*file.CSV, error) {
 		wg.Add(1)
 		go func(filePath string, delimiter rune) {
 			defer wg.Done()
-			f := file.New(filePath, delimiter)
+			f := file.New(
+				file.WithFilePath(filePath),
+				file.WithDelimiter(delimiter),
+			)
 			err := f.Read()
 			if err != nil {
 				resultChannel <- processResult{err: err}

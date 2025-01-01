@@ -34,7 +34,10 @@ You can specify the input CSV file, output Excel file, and the delimiter used in
 				fmt.Println("Invalid input file format. Please provide a CSV file.")
 				return
 			}
-			f := file.New(inputFile, delimiterRune)
+			f := file.New(
+				file.WithFilePath(inputFile),
+				file.WithDelimiter(delimiterRune),
+			)
 			err := f.Read()
 			if err != nil {
 				fmt.Println(err)

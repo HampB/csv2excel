@@ -42,23 +42,40 @@ type CSV struct {
 	Records [][]interface{}
 }
 
-// New creates a new CSV struct.
-// It initializes the CSV struct with the given file path and delimiter.
-func New(filePath string, delimiter rune) *CSV {
-	return &CSV{
-		FilePath:  filePath,
-		Delimiter: delimiter,
-		Headers:   []Column{},
-		Records:   [][]interface{}{},
+// New creates a new CSV struct with the specified options.
+func New(options ...func(*CSV)) *CSV {
+	csv := &CSV{}
+	for _, option := range options {
+		option(csv)
+	}
+	return csv
+}
+
+// WithFilePath sets the file path for the CSV struct.
+func WithFilePath(filePath string) func(*CSV) {
+	return func(c *CSV) {
+		c.FilePath = filePath
 	}
 }
 
-func NewFromRecords(filePath string, delimiter rune, headers []Column, records [][]interface{}) *CSV {
-	return &CSV{
-		FilePath:  filePath,
-		Delimiter: delimiter,
-		Headers:   headers,
-		Records:   records,
+// WithDelimiter sets the delimiter for the CSV struct.
+func WithDelimiter(delimiter rune) func(*CSV) {
+	return func(c *CSV) {
+		c.Delimiter = delimiter
+	}
+}
+
+// WithHeaders sets the column headers for the CSV struct.
+func WithHeaders(columns []Column) func(*CSV) {
+	return func(c *CSV) {
+		c.Headers = columns
+	}
+}
+
+// WithRecords sets the data records for the CSV struct.
+func WithRecords(records [][]interface{}) func(*CSV) {
+	return func(c *CSV) {
+		c.Records = records
 	}
 }
 
@@ -206,6 +223,10 @@ func Merge(files ...*CSV) (*CSV, error) {
 	for _, file := range files {
 		mergedFiles = append(mergedFiles, file.Records...)
 	}
-	f := NewFromRecords("", files[0].Delimiter, files[0].Headers, mergedFiles)
+	f := New(
+		WithHeaders(files[0].Headers),
+		WithDelimiter(files[0].Delimiter),
+		WithRecords(mergedFiles),
+	)
 	return f, nil
 }
