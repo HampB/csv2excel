@@ -116,13 +116,13 @@ func Test_New(t *testing.T) {
 		{
 			name: "Create CSV with records",
 			options: []func(*CSV){
-				WithRecords([][]interface{}{
+				WithRecords([][]Value{
 					{"a", 1},
 					{"b", 2},
 				}),
 			},
 			expected: &CSV{
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"a", 1},
 					{"b", 2},
 				},
@@ -137,7 +137,7 @@ func Test_New(t *testing.T) {
 					{Name: "Column1", Type: StringType},
 					{Name: "Column2", Type: IntegerType},
 				}),
-				WithRecords([][]interface{}{
+				WithRecords([][]Value{
 					{"a", 1},
 					{"b", 2},
 				}),
@@ -149,7 +149,7 @@ func Test_New(t *testing.T) {
 					{Name: "Column1", Type: StringType},
 					{Name: "Column2", Type: IntegerType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"a", 1},
 					{"b", 2},
 				},
@@ -170,7 +170,7 @@ func Test_CSV_ConvertColumnTypes(t *testing.T) {
 	tests := []struct {
 		name     string
 		csv      *CSV
-		expected [][]interface{}
+		expected [][]Value
 	}{
 		{
 			name: "Convert string to float and integer",
@@ -180,12 +180,12 @@ func Test_CSV_ConvertColumnTypes(t *testing.T) {
 					{Name: "Column2", Type: IntegerType},
 					{Name: "Column3", Type: StringType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"1.23", "456", "text"},
 					{"4.56", "789", "more text"},
 				},
 			},
-			expected: [][]interface{}{
+			expected: [][]Value{
 				{float64(1.23), int64(456), "text"},
 				{float64(4.56), int64(789), "more text"},
 			},
@@ -197,12 +197,12 @@ func Test_CSV_ConvertColumnTypes(t *testing.T) {
 					{Name: "Column1", Type: StringType},
 					{Name: "Column2", Type: StringType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"text1", "text2"},
 					{"text3", "text4"},
 				},
 			},
-			expected: [][]interface{}{
+			expected: [][]Value{
 				{"text1", "text2"},
 				{"text3", "text4"},
 			},
@@ -215,12 +215,12 @@ func Test_CSV_ConvertColumnTypes(t *testing.T) {
 					{Name: "Column2", Type: IntegerType},
 					{Name: "Column3", Type: StringType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"1.23", "invalid", "text"},
 					{"invalid", "789", "more text"},
 				},
 			},
-			expected: [][]interface{}{
+			expected: [][]Value{
 				{float64(1.23), "invalid", "text"},
 				{"invalid", int64(789), "more text"},
 			},
@@ -260,7 +260,7 @@ func Test_CSV_InferColumnTypes(t *testing.T) {
 					{Name: "Column2", Type: StringType},
 					{Name: "Column3", Type: StringType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"1.23", "456", "text"},
 					{"4.56", "789", "more text"},
 				},
@@ -278,7 +278,7 @@ func Test_CSV_InferColumnTypes(t *testing.T) {
 					{Name: "Column1", Type: StringType},
 					{Name: "Column2", Type: StringType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"text1", "text2"},
 					{"text3", "text4"},
 				},
@@ -295,7 +295,7 @@ func Test_CSV_InferColumnTypes(t *testing.T) {
 					{Name: "Column1", Type: StringType},
 					{Name: "Column2", Type: StringType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"123", "456"},
 					{"789", "101112"},
 				},
@@ -312,7 +312,7 @@ func Test_CSV_InferColumnTypes(t *testing.T) {
 					{Name: "Column1", Type: StringType},
 					{Name: "Column2", Type: StringType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"1.23", "4.56"},
 					{"7.89", "10.11"},
 				},
@@ -329,7 +329,7 @@ func Test_CSV_InferColumnTypes(t *testing.T) {
 					{Name: "Column1", Type: StringType},
 					{Name: "Column2", Type: StringType},
 				},
-				Records: [][]interface{}{
+				Records: [][]Value{
 					{"1.23", "invalid"},
 					{"invalid", "789"},
 				},

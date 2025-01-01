@@ -30,6 +30,10 @@ type Column struct {
 	Type ColumnType
 }
 
+// Value is an empty interface that can hold any type of value.
+// It is used to represent a value of any type in a generic way.
+type Value interface{}
+
 // CSV represents a CSV file and its parsed data.
 type CSV struct {
 	// FilePath is the path to the CSV file.
@@ -40,7 +44,7 @@ type CSV struct {
 	Headers []Column
 	// Records is a slice of slices, where each inner slice represents a row of data.
 	// The data type of the elements within the inner slices can vary based on type inference.
-	Records [][]interface{}
+	Records [][]Value
 }
 
 // New creates a new CSV struct with the specified options.
@@ -74,7 +78,7 @@ func WithHeaders(columns []Column) func(*CSV) {
 }
 
 // WithRecords sets the data records for the CSV struct.
-func WithRecords(records [][]interface{}) func(*CSV) {
+func WithRecords(records [][]Value) func(*CSV) {
 	return func(c *CSV) {
 		c.Records = records
 	}
@@ -111,9 +115,9 @@ func (c *CSV) Read() error {
 	}
 
 	if noOfRecords > 1 {
-		c.Records = make([][]interface{}, len(records)-1)
+		c.Records = make([][]Value, len(records)-1)
 		for i, record := range records[1:] {
-			c.Records[i] = make([]interface{}, len(record))
+			c.Records[i] = make([]Value, len(record))
 			for j, value := range record {
 				c.Records[i][j] = value
 			}
@@ -227,7 +231,7 @@ func Merge(files ...*CSV) (*CSV, error) {
 			return nil, fmt.Errorf("inconsistent number of columns in either %s or %s", file.FilePath, files[0].FilePath)
 		}
 	}
-	mergedFiles := make([][]interface{}, 0)
+	mergedFiles := make([][]Value, 0)
 	for _, file := range files {
 		mergedFiles = append(mergedFiles, file.Records...)
 	}
