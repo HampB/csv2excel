@@ -16,7 +16,7 @@ const defaultTypeInferanceRows = 20
 type ColumnType int
 
 const (
-	StringType ColumnType = iota
+	StringType ColumnType = iota + 1
 	FloatType
 	IntegerType
 )
